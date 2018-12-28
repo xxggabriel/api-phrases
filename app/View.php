@@ -30,12 +30,27 @@ class View
     public static function setPhrase($data)
     {
         $sql = new Sql();
-        $sql->query("INSERT INTO phrases (phrase, name_creator, email_creator) VALUES (:phrase, :name_creator, :email_creator)",[
-            ":phrase" => $data['phrase'],
-            ":name_creator" => (isset($data['name_creator'])) ? $data['name_creator'] : NULL,
-            ":email_creator" => (isset($data['email_creator'])) ? $data['email_creator'] : NULL,
-
-        ]);
+        if(!empty($data)){
+            if(!empty($data['phrase'])){
+                if(strlen($data['phrase']) <= 100){
+                    $sql->query("INSERT INTO phrases (phrase, name_creator, email_creator) VALUES (:phrase, :name_creator, :email_creator)",[
+                        ":phrase" => $data['phrase'],
+                        ":name_creator" => (isset($data['name_creator'])) ? $data['name_creator'] : NULL,
+                        ":email_creator" => (isset($data['email_creator'])) ? $data['email_creator'] : NULL,
+            
+                    ]);
+                } else {
+                    echo "Error, your sentence is longer than 100 characters, try to make a summary";
+                    exit;
+                }
+            } else {
+                echo "Error, phrase not defined";
+                exit;
+            }
+        }else {
+            echo "Error no parameter passed";
+            exit;
+        }
         $phrases =  $sql->select("SELECT * FROM phrases");
         echo json_encode($phrases);
     }
