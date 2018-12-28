@@ -52,5 +52,15 @@ class Sql
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
-
+	public function backup()
+	{
+		$config = new Config;
+		exec("mysqldump --routines -u ".$config->getDatabase("user")." -p". $config->getDatabase("password")." ".$config->getDatabase("dbname") ."> ". $_SERVER["DOCUMENT_ROOT"] . "/app/Backups/backup-".date("Y-m-d_H:i:s").".sql");
+		
+		// sleep(5);
+		exec("git add ".$_SERVER["DOCUMENT_ROOT"] . "/app/Backups/*");
+		exec("git commit -m 'Backup do banco de dados '". date("Y/m/d"));
+		exec("git push origin master");
+		
+	}	
 }
