@@ -10,7 +10,7 @@ class View
     public static function getAllPhrases()
     {
         $sql = new Sql();
-        $phrases =  $sql->select("SELECT * FROM phrases");
+        $phrases =  $sql->select("CALL get_phrases(NULL)");
         echo json_encode($phrases);
     }
 
@@ -18,7 +18,7 @@ class View
     public static function getPhrase($id_phrase)
     {
         $sql = new Sql();
-        $phrases =  $sql->select("SELECT * FROM phrases WHERE id_phrase = :id_phrase",[
+        $phrases =  $sql->select("CALL get_phrases(:id_phrase)",[
             ":id_phrase" => $id_phrase
         ]);
         echo json_encode($phrases);
@@ -33,7 +33,7 @@ class View
         if(!empty($data)){
             if(!empty($data['phrase'])){
                 if(strlen($data['phrase']) <= 100){
-                    $sql->query("INSERT INTO phrases (phrase, name_creator, email_creator) VALUES (:phrase, :name_creator, :email_creator)",[
+                    $sql->query("CALL create_phrase(:phrase, :name_creator, :email_creator);",[
                         ":phrase" => $data['phrase'],
                         ":name_creator" => (isset($data['name_creator'])) ? $data['name_creator'] : NULL,
                         ":email_creator" => (isset($data['email_creator'])) ? $data['email_creator'] : NULL,
